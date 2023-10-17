@@ -3,10 +3,11 @@ import cors from 'cors';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import router from './app/routes/routes';
 import httpStatus from 'http-status';
-import { IAcademicSemester } from './app/modules/academicSemester/academicSemester.interface';
+import cookieParser from 'cookie-parser';
 import { userUtils } from './app/modules/user/user.utils';
 const app: Application = express();
 
+app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
