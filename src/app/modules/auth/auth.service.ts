@@ -1,10 +1,16 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { User } from '../user/user.model';
-import { ILoginUser, ILoginUserResponse } from './auth.interface';
-import jwt, { Secret } from 'jsonwebtoken';
+import {
+  ILoginUser,
+  ILoginUserResponse,
+  IPasswordChange,
+} from './auth.interface';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import { jwtHelper } from '../../../helpers/jwtHelper';
 import config from '../../../config';
+import { IUser } from '../user/user.interface';
+import bcrypt from 'bcrypt';
 
 const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   const { id, password } = payload;
@@ -76,7 +82,41 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const changePassword = async (
+  userData: JwtPayload,
+  passwordData: IPasswordChange
+) => {
+  const user = new User();
+  const userExist = await user.isUserExist(userData.id);
+  if (!userExist) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "User doesn't exist");
+  }
+  const { currentPassword, newPassword } = passwordData;
+  if (
+    userExist?.password &&
+    !user.isPasswordMatched(currentPassword, userExist?.password)
+  ) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Password isn't correct!");
+  }
+
+  const password = await bcrypt.hash(
+    newPassword,
+    config.bcrypt_salt_rounds as string
+  );
+  const updatedData = {
+    password,
+    needsPasswordChange: false,
+  };
+  const result = await User.findOneAndUpdate(
+    { id: userExist.id },
+    updatedData,
+    { new: true }
+  );
+  return result;
+};
+
 export const AuthService = {
   loginUser,
   refreshToken,
+  changePassword,
 };

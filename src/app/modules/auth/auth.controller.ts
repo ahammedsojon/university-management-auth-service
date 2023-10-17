@@ -5,6 +5,7 @@ import httpStatus from 'http-status';
 import { AuthService } from './auth.service';
 import { ILoginUserResponse, IRefreshTokenResponse } from './auth.interface';
 import config from '../../../config';
+import { IUser } from '../user/user.interface';
 
 const loginUser: RequestHandler = catchAsync(async (req, res) => {
   const { ...loginData } = req.body;
@@ -43,12 +44,12 @@ const refreshToken: RequestHandler = catchAsync(async (req, res) => {
 const changePassword: RequestHandler = catchAsync(async (req, res) => {
   const { ...passwordData } = req.body;
   const user = req.user;
-  const result = await AuthService.changePassword(...passwordData, user);
+  const result = await AuthService.changePassword(user, passwordData);
 
-  sendResponse<IRefreshTokenResponse>(res, {
+  sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Password successfully!',
+    message: 'Password changed successfully!',
     data: result,
   });
 });
