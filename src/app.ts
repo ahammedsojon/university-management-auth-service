@@ -1,8 +1,10 @@
-import express, { Application, NextFunction, Request, Response } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import router from './app/routes/routes';
 import httpStatus from 'http-status';
+import { IAcademicSemester } from './app/modules/academicSemester/academicSemester.interface';
+import { userUtils } from './app/modules/user/user.utils';
 const app: Application = express();
 
 app.use(cors());
@@ -14,8 +16,18 @@ app.use('/api/v1/', router);
 // global error handler
 app.use(globalErrorHandler);
 
+const academicSemester = {
+  year: '2025',
+  code: '01',
+};
+
+const generateId = async () => {
+  await userUtils.generateFacultyId(academicSemester);
+};
+generateId();
+
 // not found error handler
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response) => {
   res.status(httpStatus.NOT_FOUND).json({
     success: false,
     message: 'API Not Found',
@@ -26,6 +38,5 @@ app.use((req: Request, res: Response, next: NextFunction) => {
       },
     ],
   });
-  next();
 });
 export default app;

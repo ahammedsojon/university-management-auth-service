@@ -19,6 +19,7 @@ const sendResponse = <T>(res: Response, data: ApiResponse<T>) => {
     meta: data.meta || null,
     data: data.data || null,
   };
+
   res.status(data.statusCode).json(responseData);
 };
 

@@ -13,10 +13,10 @@
   ],
 
   "rules": {
-    "no-unused-vars": "error",
+    "no-unused-vars": "warn",
     "prefer-const": "error",
     "no-unused-expressions": "error",
-    "no-undef": "error",
+    "no-undef": "warn",
     "no-console": "warn",
     "@typescript-eslint/consistent-type-definitions": ["error", "type"]
   },

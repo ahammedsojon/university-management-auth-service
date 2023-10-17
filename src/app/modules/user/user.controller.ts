@@ -5,31 +5,44 @@ import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { IUser } from './user.interface';
 
-// const getUsers: RequestHandler = async (req, res) => {
-//   res.status(200).json({
-//     msg: 'Welcome to uinversity!',
-//   })
-// }
+const createStudent: RequestHandler = catchAsync(async (req, res) => {
+  const { student, ...userData } = req.body;
 
-const getUsers: RequestHandler = (req, res) => {
-  res.status(200).json({
-    msg: 'Welcome to users dashboard',
-  });
-};
-
-const createUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const { user } = req.body;
-  const result = await UserService.createUserToDB(user);
+  const result = await UserService.createStudentToDB(student, userData);
   sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User has been created successfully!',
+    message: 'Student has been created successfully!',
     data: result,
   });
-  next();
+});
+
+const createFaculty: RequestHandler = catchAsync(async (req, res) => {
+  const { faculty, ...userData } = req.body;
+
+  const result = await UserService.createFacultyToDB(faculty, userData);
+  sendResponse<IUser>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Faculty has been created successfully!',
+    data: result,
+  });
+});
+
+const createAdmin: RequestHandler = catchAsync(async (req, res) => {
+  const { admin, ...userData } = req.body;
+
+  const result = await UserService.createAdminToDB(admin, userData);
+  sendResponse<IUser>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin has been created successfully!',
+    data: result,
+  });
 });
 
 export const UserController = {
-  getUsers,
-  createUser,
+  createStudent,
+  createFaculty,
+  createAdmin,
 };

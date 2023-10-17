@@ -35,7 +35,7 @@ const updatedSemester = async (
       'Academic semester code is invalid!'
     );
   }
-  const result = AcademicSemester.findOneAndUpdate(
+  const result = await AcademicSemester.findOneAndUpdate(
     {
       _id: id,
     },
@@ -49,8 +49,11 @@ const getSemesters = async (
   filters: IFilters,
   paginationOptions: IPaginaiton
 ): Promise<IGenericResponses<IAcademicSemester[]>> => {
+  // console.log(filters, 22);
+
   const { searchParam, ...filtersData } = filters;
   const academicSemesterSearchableFields = ['title', 'code', 'year'];
+
   const andConditions = [];
   if (searchParam) {
     andConditions.push({
@@ -94,10 +97,15 @@ const getSemesters = async (
   };
 };
 
-const getSingle = async (
-  payload: string
+const getSingle = async (id: string): Promise<IAcademicSemester | null> => {
+  const result = await AcademicSemester.findById({ _id: id });
+  return result;
+};
+
+const deleteSemester = async (
+  id: string
 ): Promise<IAcademicSemester | null> => {
-  const result = await AcademicSemester.findById(payload);
+  const result = await AcademicSemester.findByIdAndDelete({ _id: id });
   return result;
 };
 
@@ -106,4 +114,5 @@ export const AcademicSemisterService = {
   getSemesters,
   getSingle,
   updatedSemester,
+  deleteSemester,
 };

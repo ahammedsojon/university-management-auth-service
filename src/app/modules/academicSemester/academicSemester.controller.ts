@@ -7,7 +7,7 @@ import paginationFields from '../../../constants/paginationFields';
 import pick from '../../../shared/pick';
 import { academicSemesterFilterableFields } from './academicSemester.constant';
 
-const createSemester: RequestHandler = catchAsync(async (req, res, next) => {
+const createSemester: RequestHandler = catchAsync(async (req, res) => {
   const { ...academicSemesterData } = req.body;
 
   const result = await AcademicSemisterService.createSemester(
@@ -19,10 +19,9 @@ const createSemester: RequestHandler = catchAsync(async (req, res, next) => {
     message: 'Academic semester has been created successfully!',
     data: result,
   });
-  next();
 });
 
-const getAllSemesters: RequestHandler = catchAsync(async (req, res, next) => {
+const getAllSemesters: RequestHandler = catchAsync(async (req, res) => {
   const filters = pick(req.query, academicSemesterFilterableFields);
   const paginationOptions = pick(req.query, paginationFields);
 
@@ -37,7 +36,6 @@ const getAllSemesters: RequestHandler = catchAsync(async (req, res, next) => {
     meta: result.meta,
     data: result.data,
   });
-  next();
 });
 
 const getSingleSemester = catchAsync(async (req: Request, res: Response) => {
@@ -65,12 +63,11 @@ const updateSemester = catchAsync(async (req: Request, res: Response) => {
 
 const deleteSemester: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
-  const updatedData = req.body;
-  const result = await AcademicSemisterService.updatedSemester(id, updatedData);
+  const result = await AcademicSemisterService.deleteSemester(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Semester updated successfully',
+    message: 'Semester deleted successfully',
     data: result,
   });
 });

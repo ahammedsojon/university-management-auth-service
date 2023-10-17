@@ -9,9 +9,9 @@ import { ZodError } from 'zod';
 import handleZodError from '../errors/handleZodError';
 import handleCastError from '../errors/handleCastError';
 
-const globalErrorHandler: ErrorRequestHandler = (err, req, res) => {
+const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   config.env === 'development'
-    ? console.log('globalErrorHandler ~ ', err)
+    ? console.log('globalErrorHandler ~', err)
     : errorLogger.error('globalErrorHandler ~ ', err);
 
   let statusCode = 500;
@@ -38,7 +38,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res) => {
     errorMessages = err?.message
       ? [
           {
-            path: '',
+            path: 'Api Not Found',
             message: err?.message,
           },
         ]
